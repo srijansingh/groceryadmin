@@ -1,0 +1,58 @@
+.container{
+    display:flex;
+    flex-direction:row;
+  
+    
+}
+
+.table-container{
+    max-width:500px;
+    min-height: 500px;
+    width:100%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: space-between;
+    
+    padding:10px;
+
+}
+
+.table-container table{
+    width:100%;
+   
+}
+
+.table-container table tr{
+  padding-top:20px;
+   
+}
+
+.table-container input, button{
+   width:100%;
+   width:100%; 
+   padding:12px 8px;
+   outline:none;
+   border:1px solid rgb(177, 174, 174);
+   margin:12px 0;
+   font-size:18px;
+  
+}
+button{
+    background:blue;
+    color:white;
+    cursor:pointer
+}
+
+.image-box{
+    width:100%;
+    
+    padding:10px;
+}                                                                                                                                                                                                                                                                                                         
+::placeholder{
+    color:rgb(190, 189, 189)
+}
+.box{
+    display:flex;
+    justify-content: space-around;
+    align-items: center;
+}
