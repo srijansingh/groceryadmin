@@ -26,16 +26,74 @@ class CreateProduct extends Component {
         this.state = {
             thumblink:null,
             imageurl: null,
-            category:null,  
+            categoryid:null,  
             title:null,
             sku:null,
-            subcategory:null,
+            subcategoryid:null,
             costprice:null,
             sellingprice:null,
             description:null,
             isLoading:false,
-            selected:false
+            selected:false,
+            categories:[],
+            subcategories:[]
         }
+    }
+
+
+    componentDidMount(){
+        fetch('https://api.dholpurshare.com/admin/category',{
+            method:'GET',
+            headers:{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                Authorization:'Bearer '+this.props.token
+            }
+        })
+        .then(res => {
+            if(res.status !==200){
+                throw new Error('Failed to fetch the product')
+            }
+            return res.json()
+        }).then(response => {
+            console.log(response.data)
+            this.setState({
+                categories:response.data,
+                isLoading:false
+            }) 
+        })
+        .catch(err => {
+          this.setState({
+            isLoading:false
+          })
+        })
+
+
+        fetch('https://api.dholpurshare.com/admin/subcategory',{
+            method:'GET',
+            headers:{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                Authorization:'Bearer '+this.props.token
+            }
+        })
+        .then(res => {
+            if(res.status !==200){
+                throw new Error('Failed to fetch the product')
+            }
+            return res.json()
+        }).then(response => {
+            console.log(response.data)
+            this.setState({
+                subcategories:response.data,
+                isLoading:false
+            }) 
+        })
+        .catch(err => {
+          this.setState({
+            isLoading:false
+          })
+        })
     }
 
     fileChangeHandler = (event) => {
@@ -59,11 +117,12 @@ class CreateProduct extends Component {
                 this.setState({
                     imageurl : url
                 })
-                fetch('https://api.edgiav.com/api/gallery', {
+                fetch('https://api.dholpurshare.com/admin/product', {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization:'Bearer '+this.props.token
                     },
                     body: JSON.stringify(this.state)
                 }).then(result => {
@@ -72,7 +131,7 @@ class CreateProduct extends Component {
                         this.setState({
                             isLoading: false
                         })
-                        alert('Post Added Successfully')
+                        alert('Product Added Successfully')
                         window.location.reload(false);
                        
                     })
@@ -89,6 +148,15 @@ class CreateProduct extends Component {
 
 
     render() {
+
+        const category  = this.state.categories.map((item, index) => {
+            return <option value={item._id}>{item.category}</option>
+        })
+
+        const subcategory  = this.state.subcategories.map((item, index) => {
+            return <option value={item._id}>{item.subcategory}</option>
+        })
+
         return (
             <div>
                 <div>
@@ -107,20 +175,23 @@ class CreateProduct extends Component {
                                   <tr>
                                       <td>Select Category</td>
                                       <td>
-                                          <select color="primary" variant="outlined"  onChange={(event)=>{this.setState({category:event.target.value})}}>
-                                                <option value="1">Option</option>
+                                          <select color="primary" variant="outlined"  onChange={(event)=>{this.setState({categoryid:event.target.value})}}>
+                                          <option disabled selected>Select Category</option>
+                                                {category}
                                           </select>
                                     </td>
                                   </tr>
-
+                                
                                   <tr>
                                       <td>Select Subcategory</td>
                                       <td>
-                                          <select color="primary" variant="outlined"  onChange={(event)=>{this.setState({subcategory:event.target.value})}}>
-                                                <option value="1">Option</option>
+                                          <select color="primary" variant="outlined"  onChange={(event)=>{this.setState({subcategoryid:event.target.value})}}>
+                                          <option disabled selected>Select Subcategory</option>
+                                                {subcategory}
                                           </select>
                                     </td>
                                   </tr>
+                                 
 
                                   <tr>
                                       <td>Choose Image</td>
