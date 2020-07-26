@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import "./ViewProduct.css";
 
 const styles = (theme) => ({
@@ -31,7 +32,7 @@ class ViewProduct extends Component {
             isLoading:true
         });
 
-        fetch('https://api.dholpurshare.com/admin/product', {
+        fetch('https://server.dholpurshare.com/admin/product', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -60,7 +61,7 @@ class ViewProduct extends Component {
     }
 
     handleDelete = (id) => {
-        fetch('https://api.edgiav.com/api/gallery/'+id, {
+        fetch('https://server.dholpurshare.com/admin/product/'+id, {
               method: "DELETE",
               headers: {
                   "Accept": "application/json",
@@ -89,13 +90,17 @@ class ViewProduct extends Component {
                
                 <tr  key={index}>
                     <td style={index%2!==0 ? {background:'#f1f1f1'} :{background:'#e6e6e6'}}>{index+1}</td>
+                    <td>{item.sku}</td>
                     <td ><img src={item.imageurl} height='60px' /></td>
                     <td>{item.title}</td>
-                    <td>{item.category}</td>
-                    <td>{item.subcategory}</td>
+            
+                   
                     <td>{item.sellingprice}</td>
                     <td>{item.costprice}</td>
-                    <td><DeleteIcon style={{color:'#000', cursor:'pointer'}} /></td>
+                    <td>
+                        <DeleteIcon style={{color:'#000', cursor:'pointer'}} onClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(item._id)};}}/>
+                       <a href={'/product/'+item._id}> <AssignmentTurnedInIcon /></a>
+                    </td>
                  </tr>
             )
         })
@@ -111,14 +116,14 @@ class ViewProduct extends Component {
                     </div>
 
                     <div style={{padding:'1rem'}}>
-                       <table style={{width:'600px', textAlign:'center'}}>
+                       <table style={{width:'900px', textAlign:'center'}}>
                            <thead style={{ background:'#f2f2f2', color:'black'}}>
                                <tr>
                                    <th style={{padding:'1rem 0', border:'none'}}>S.No</th>
+                                   <th>SKU</th>
                                    <th >Preview</th>
                                    <th>Title</th>
-                                   <th>Category</th>
-                                   <th>Subcategory</th>
+                                   
                                    <th>SP</th>
                                    <th>CP</th>
                                    <th>Action</th>

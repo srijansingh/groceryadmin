@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
-import "./ViewCategory.css";
+import "./ViewOrder.css";
 
 const styles = (theme) => ({
     root: {
@@ -17,12 +17,12 @@ const styles = (theme) => ({
     }});
   
 
-class ViewCategory extends Component {
+class ViewOrder extends Component {
     constructor(){
         super();
         this.state = {
             isLoading : false,
-            category:[]
+            order:[]
         }
     }
 
@@ -31,7 +31,7 @@ class ViewCategory extends Component {
             isLoading:true
         });
 
-        fetch('https://server.dholpurshare.com/admin/category', {
+        fetch('https://server.dholpurshare.com/admin/order', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -47,7 +47,7 @@ class ViewCategory extends Component {
         }).then(response => {
             console.log(response.data)
             this.setState({
-                category:response.data,
+                order:response.data,
                 isLoading:false
             }) 
         })
@@ -59,39 +59,40 @@ class ViewCategory extends Component {
                 
     }
 
-    handleDelete = (id) => {
-        fetch('https://server.dholpur.com/api/category/'+id, {
-              method: "DELETE",
-              headers: {
-                  "Accept": "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: 'Bearer '+this.props.token
-              }
-          })
-        .then(response => {
-          this.setState({
-            blogpost:false
-          })
-          alert("Deleted Successfully");
-          window.location.reload(false);
-        })
-        .catch(err => {
-         
-          alert("Something went wrong")
-        })
-      }
+    
   
     
     render() {
-        const category = this.state.category.map((item, index) => {
+        const order = this.state.order.map((item, index) => {
             return (
 
                
-                <tr  key={index}>
-                    <td style={index%2!==0 ? {background:'#f1f1f1'} :{background:'#e6e6e6'}}>{index+1}</td>
-                    <td><img src={item.imageurl} height='60px' /></td>
-                    <td>{item.category}</td>
-                    <td><DeleteIcon style={{color:'#000', cursor:'pointer'}} /></td>
+                <tr style={index%2!==0 ? {background:'#f1f1f1'} :{background:'#e6e6e6'}}  key={index}>
+                <td >{index+1}</td>
+                <td>{item.referenceid}</td>
+                <td >{item.sku.split(',').map(sku => {
+                  return <div><strong>{sku}</strong><br /></div>
+                })}</td>
+                <td >{item.imageurls.split(',').map((img, index) => {
+                  return <img src={img} height='50px' />
+                })}</td>
+                <td >{item.titles.split(',').map(title => {
+                    return <div><strong>{title}</strong><br /></div>
+                })}</td>
+                <td style={{width:'120px'}}>{item.address}</td>
+                <td>{item.mobile}</td>
+                <td>
+                    <select>
+                        <option selected value={item.status}>{item.status}</option>
+                        <option disabled>Status</option>
+                        <option value='processing'>Processing</option>
+                        <option value='confirmed'>Confirm</option>
+                        <option value='shipped'>Shipped</option>
+                        <option value='delivered'>Delivered</option>
+
+                    </select>
+                </td>
+                <td><button onClick={() => {this.handleUpdate(item._id)}}>Update</button></td>
                  </tr>
             )
         })
@@ -107,17 +108,22 @@ class ViewCategory extends Component {
                     </div>
 
                     <div style={{padding:'1rem'}}>
-                       <table style={{width:'600px', textAlign:'center'}}>
+                       <table style={{width:'100%', textAlign:'center'}}>
                            <thead style={{ background:'#f2f2f2', color:'black'}}>
                                <tr>
                                    <th style={{padding:'1rem 0', border:'none'}}>S.No</th>
+                                   <th>Ref. Id</th>
+                                   <th>SKU</th>
                                    <th>Preview</th>
                                    <th>Title</th>
+                                   <th>Address</th>
+                                   <th>Mobile</th>
+                                   <th>Status</th>
                                    <th>Action</th>
                                </tr>
                            </thead>
                            <tbody>
-                              {category}
+                              {order}
                            </tbody>
                        </table>
                     </div>
@@ -128,7 +134,7 @@ class ViewCategory extends Component {
 }
 
 
-export default  withStyles(styles, {withThemes: true})(ViewCategory)
+export default  withStyles(styles, {withThemes: true})(ViewOrder)
 
 
  /* <div key={index} onDoubleClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(list._id)};}} className="gallery-card">

@@ -14,6 +14,8 @@ import ViewCategory from './components/Category/ViewCategory';
 import "./App.css"; 
 import ViewSubcategory from './components/Subcategory/ViewSubcategory';
 import ViewProduct from './components/Product/ViewProduct';
+import EditProduct from './components/Product/EditProduct';
+import ViewOrder from './components/Order/ViewOrder';
 
 class App extends Component {
   state = {
@@ -56,7 +58,7 @@ logoutHandler = () => {
   loginHandler = (event, authData) => {
     event.preventDefault();
     this.setState({ authLoading: true });
-    fetch('https://api.dholpurshare.com/auth/login', {
+    fetch('https://server.dholpurshare.com/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -173,11 +175,21 @@ render(){
             )}
           />
 
+<Route exact token={this.state.token} path="/product/:_id" component={EditProduct}/>  
+
         <Route
             path="/view-category"
             exact
             render={props => (
               <ViewCategory userId={this.state.userId}  token={this.state.token} />
+            )}
+          />
+
+<Route
+            path="/order"
+            exact
+            render={props => (
+              <ViewOrder userId={this.state.userId}  token={this.state.token} />
             )}
           />
 

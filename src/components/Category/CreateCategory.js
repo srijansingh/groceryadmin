@@ -54,7 +54,7 @@ class CreateCategory extends Component {
                 this.setState({
                     imagelink : url
                 })
-                fetch('https://api.edgiav.com/api/gallery', {
+                fetch('https://server.edgiav.com/api/gallery', {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
