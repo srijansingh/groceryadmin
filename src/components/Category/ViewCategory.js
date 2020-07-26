@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-
-import "./ViewGallery.css";
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
+import "./ViewCategory.css";
 
 const styles = (theme) => ({
     root: {
@@ -16,7 +17,7 @@ const styles = (theme) => ({
     }});
   
 
-class ViewGallery extends Component {
+class ViewCategory extends Component {
     constructor(){
         super();
         this.state = {
@@ -30,7 +31,7 @@ class ViewGallery extends Component {
             isLoading:true
         });
 
-        fetch('https://api.edgiav.com/api/gallery', {
+        fetch('https://api.dholpurshare.com/admin/category', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -80,15 +81,18 @@ class ViewGallery extends Component {
         })
       }
   
-
+    
     render() {
-        const category = this.state.category.map((list, index) => {
+        const category = this.state.category.map((item, index) => {
             return (
-                <div key={index} onDoubleClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(list._id)};}} className="gallery-card">
-                    <div className="gallery-image">
-                        <img src={list.imagelink} alt={list.title+" edgav"}/>
-                    </div>
-                </div>
+
+               
+                <tr  key={index}>
+                    <td style={index%2!==0 ? {background:'#f1f1f1'} :{background:'#e6e6e6'}}>{index+1}</td>
+                    <td><img src={item.imageurl} height='60px' /></td>
+                    <td>{item.category}</td>
+                    <td><DeleteIcon style={{color:'#000', cursor:'pointer'}} /></td>
+                 </tr>
             )
         })
         return (
@@ -97,17 +101,25 @@ class ViewGallery extends Component {
                     <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem'}}>
                     
                         <Typography style={{color:'white'}}>
-                            View Gallery
+                            View Category
                         </Typography>
 
                     </div>
 
                     <div style={{padding:'1rem'}}>
-                       <div className="gallery-container">
-                       {
-                          this.state.isLoading ? 'Loading please wait...' : category
-                        }
-                       </div>
+                       <table style={{width:'600px', textAlign:'center'}}>
+                           <thead style={{ background:'black', color:'white'}}>
+                               <tr>
+                                   <th style={{padding:'1rem 0', border:'none'}}>S.No</th>
+                                   <th>Preview</th>
+                                   <th>Title</th>
+                                   <th>Action</th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                              {category}
+                           </tbody>
+                       </table>
                     </div>
                 </div>
             </div>
@@ -116,4 +128,11 @@ class ViewGallery extends Component {
 }
 
 
-export default  withStyles(styles, {withThemes: true})(ViewGallery)
+export default  withStyles(styles, {withThemes: true})(ViewCategory)
+
+
+ /* <div key={index} onDoubleClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(list._id)};}} className="gallery-card">
+                    <div className="gallery-image">
+                        <img src={list.imagelink} alt={list.title+" edgav"}/>
+                    </div>
+                </div> */

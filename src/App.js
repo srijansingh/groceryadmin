@@ -7,12 +7,12 @@ import Dashboard from './components/dashboard/dashboard';
 import Customer from './components/Customer/customer';
 import Account from './components/Account/account';
 import CreateCategory from './components/Category/CreateCategory';
-import ViewGallery from './components/Category/ViewGallery';
-
 import CreateSubcategory from './components/Subcategory/CreateSubcategory';
 import CreateProduct from './components/Product/CreateProduct';
-import "./App.css"; 
 
+import ViewCategory from './components/Category/ViewCategory';
+import "./App.css"; 
+import ViewSubcategory from './components/Subcategory/ViewSubcategory';
 
 class App extends Component {
   state = {
@@ -176,7 +176,16 @@ render(){
             path="/view-category"
             exact
             render={props => (
-              <ViewGallery userId={this.state.userId}  token={this.state.token} />
+              <ViewCategory userId={this.state.userId}  token={this.state.token} />
+            )}
+          />
+
+
+      <Route
+            path="/view-subcategory"
+            exact
+            render={props => (
+              <ViewSubcategory userId={this.state.userId}  token={this.state.token} />
             )}
           />
 
