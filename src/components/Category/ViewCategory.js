@@ -108,7 +108,7 @@ class ViewCategory extends Component {
 
                     <div style={{padding:'1rem'}}>
                        <table style={{width:'600px', textAlign:'center'}}>
-                           <thead style={{ background:'black', color:'white'}}>
+                           <thead style={{ background:'#f2f2f2', color:'black'}}>
                                <tr>
                                    <th style={{padding:'1rem 0', border:'none'}}>S.No</th>
                                    <th>Preview</th>

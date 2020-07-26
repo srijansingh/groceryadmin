@@ -13,6 +13,7 @@ import CreateProduct from './components/Product/CreateProduct';
 import ViewCategory from './components/Category/ViewCategory';
 import "./App.css"; 
 import ViewSubcategory from './components/Subcategory/ViewSubcategory';
+import ViewProduct from './components/Product/ViewProduct';
 
 class App extends Component {
   state = {
@@ -186,6 +187,15 @@ render(){
             exact
             render={props => (
               <ViewSubcategory userId={this.state.userId}  token={this.state.token} />
+            )}
+          />
+
+
+      <Route
+            path="/view-product"
+            exact
+            render={props => (
+              <ViewProduct userId={this.state.userId}  token={this.state.token} />
             )}
           />
 
