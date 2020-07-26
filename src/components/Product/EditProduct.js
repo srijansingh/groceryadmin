@@ -29,6 +29,7 @@ class EditProduct extends Component {
             thumblink:null,
             imageurl: null,
             categoryid:null,  
+            id:null,
             title:null,
             sku:null,
             subcategoryid:null,
@@ -60,6 +61,7 @@ class EditProduct extends Component {
         }).then(response => {
             console.log(response.data)
             this.setState({
+                id:response.data._id,
                 title:response.data.title,
                 sku:response.data.sku,
                 costprice:response.data.costprice,
@@ -75,64 +77,20 @@ class EditProduct extends Component {
         })
     }
 
-    fileChangeHandler = (event) => {
-        console.log(event.target.files[0]);
+   
+
+
+    
+    handleUpdate = () => {
         this.setState({
-            thumblink: URL.createObjectURL(event.target.files[0]),
-            selected : true
+            isLoading:true
         })
-    }
-
-
-    firebaseupload=async()=>{
-        this.setState({isLoading : true})
-        const response = await fetch(this.state.thumblink)
-        const blob = await response.blob()
-        var ref = firebase.storage().ref().child('thumbnail/' + this.state.thumblink)
-        return ref.put(blob)
-        .then(()=>{
-            ref.getDownloadURL().then((url)=>{
-                console.log(url)
-                this.setState({
-                    imageurl : url
-                })
-                fetch('https://server.dholpurshare.com/admin/product', {
-                    method: "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json",
-                        Authorization:'Bearer '+this.props.token
-                    },
-                    body: JSON.stringify(this.state)
-                }).then(result => {
-                    result.json().then(response => {
-                        
-                        this.setState({
-                            isLoading: false
-                        })
-                        alert('Product Added Successfully')
-                        window.location.reload(false);
-                       
-                    })
-                }).catch(err => {
-                    alert("Something went wrong")
-                    this.setState({
-                        loading: false,
-                        error: err
-                    });
-                });  
-            })
-        })
-    }
-
-
-    handleUpdate = (id) => {
         fetch('https://server.dholpurshare.com/admin/product', {
             method: "PUT",
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                Authorization:'Bearer '+this.props.token
+                Authorization:'Bearer '+token
             },
             body: JSON.stringify(this.state)
         }).then(result => {

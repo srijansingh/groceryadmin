@@ -22,7 +22,9 @@ class ViewOrder extends Component {
         super();
         this.state = {
             isLoading : false,
-            order:[]
+            order:[],
+            id:null,
+            status:null
         }
     }
 
@@ -59,7 +61,37 @@ class ViewOrder extends Component {
                 
     }
 
-    
+    handleUpdate = (e) => {
+        this.setState({
+            isLoading:true,
+            id:e
+        })
+        fetch('https://server.dholpurshare.com/admin/order', {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                Authorization:'Bearer '+this.props.token
+            },
+            body: JSON.stringify(this.state)
+        }).then(result => {
+            result.json().then(response => {
+                
+                this.setState({
+                    isLoading: false
+                })
+                alert('Status Updated Successfully')
+                window.location.reload(false);
+                
+            })
+        }).catch(err => {
+            alert("Something went wrong")
+            this.setState({
+                isLoading: false,
+                error: err
+            });
+        });  
+    }
   
     
     render() {
@@ -83,7 +115,7 @@ class ViewOrder extends Component {
                 <td>{item.mobile}</td>
                 <td>
                     <select>
-                        <option selected value={item.status}>{item.status}</option>
+                        <option selected value={item.status} onChange={(event)=>{this.setState({status:event.target.value})}}>{item.status}</option>
                         <option disabled>Status</option>
                         <option value='processing'>Processing</option>
                         <option value='confirmed'>Confirm</option>
@@ -92,7 +124,15 @@ class ViewOrder extends Component {
 
                     </select>
                 </td>
-                <td><button onClick={() => {this.handleUpdate(item._id)}}>Update</button></td>
+                <td>
+
+                    {
+                        this.state.isLoading ? 
+                        <button>Updating..</button>
+                        :
+                        <button onClick={() => {this.handleUpdate(item._id)}}>Update</button>
+                    }
+                </td>
                  </tr>
             )
         })
