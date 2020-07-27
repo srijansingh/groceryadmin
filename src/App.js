@@ -16,6 +16,7 @@ import ViewSubcategory from './components/Subcategory/ViewSubcategory';
 import ViewProduct from './components/Product/ViewProduct';
 import EditProduct from './components/Product/EditProduct';
 import ViewOrder from './components/Order/ViewOrder';
+import SingleOrder from './components/Order/SingleOrder';
 
 class App extends Component {
   state = {
@@ -192,7 +193,7 @@ render(){
               <ViewOrder userId={this.state.userId}  token={this.state.token} />
             )}
           />
-
+<Route exact token={this.state.token} path="/order/:id" component={SingleOrder}/>  
 
       <Route
             path="/view-subcategory"

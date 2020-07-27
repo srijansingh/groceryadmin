@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import "./ViewOrder.css";
 
 const styles = (theme) => ({
@@ -61,37 +62,7 @@ class ViewOrder extends Component {
                 
     }
 
-    handleUpdate = (e) => {
-        this.setState({
-            isLoading:true,
-            id:e
-        })
-        fetch('https://server.dholpurshare.com/admin/order', {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                Authorization:'Bearer '+this.props.token
-            },
-            body: JSON.stringify(this.state)
-        }).then(result => {
-            result.json().then(response => {
-                
-                this.setState({
-                    isLoading: false
-                })
-                alert('Status Updated Successfully')
-                window.location.reload(false);
-                
-            })
-        }).catch(err => {
-            alert("Something went wrong")
-            this.setState({
-                isLoading: false,
-                error: err
-            });
-        });  
-    }
+   
   
     
     render() {
@@ -114,24 +85,10 @@ class ViewOrder extends Component {
                 <td style={{width:'120px'}}>{item.address}</td>
                 <td>{item.mobile}</td>
                 <td>
-                    <select>
-                        <option selected value={item.status} onChange={(event)=>{this.setState({status:event.target.value})}}>{item.status}</option>
-                        <option disabled>Status</option>
-                        <option value='processing'>Processing</option>
-                        <option value='confirmed'>Confirm</option>
-                        <option value='shipped'>Shipped</option>
-                        <option value='delivered'>Delivered</option>
-
-                    </select>
+                    {item.status}
                 </td>
                 <td>
-
-                    {
-                        this.state.isLoading ? 
-                        <button>Updating..</button>
-                        :
-                        <button onClick={() => {this.handleUpdate(item._id)}}>Update</button>
-                    }
+                     <a href={'/order/'+item._id}> View</a>
                 </td>
                  </tr>
             )

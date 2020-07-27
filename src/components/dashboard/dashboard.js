@@ -82,17 +82,9 @@ class  Dashboard extends Component {
                 <td style={{width:'120px', padding:'0.5rem 0'}}>{item.address}</td>
                 <td>{item.mobile}</td>
                 <td>
-                    <select style={{border:'none'}}>
-                        <option selected value={item.status}>{item.status}</option>
-                        <option disabled>Status</option>
-                        <option value='processing'>Processing</option>
-                        <option value='confirmed'>Confirm</option>
-                        <option value='shipped'>Shipped</option>
-                        <option value='delivered'>Delivered</option>
-
-                    </select>
+                   {item.status}
                 </td>
-                <td><button style={{border:'none', background:'#e6e6e6', color:'black'}} onClick={() => {this.handleUpdate(item._id)}}>Update</button></td>
+                <td><a style={{border:'none',padding:'10px', width:'70px', background:'#e6e6e6', textDecoration:'none', color:'blue'}} href={'/order/'+item._id}>View</a></td>
                  </tr>
             )
         })
