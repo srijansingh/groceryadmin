@@ -32,7 +32,7 @@ class  Customer extends Component {
         })
 
 
-        fetch('https://api.edgiav.com/api/customer', {
+        fetch('https://server.dholpurshare.com/admin/customer', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -42,14 +42,14 @@ class  Customer extends Component {
         })
         .then(res => {
             if(res.status !== 200){
-                throw new Error('Failed to fetch category')
+                throw new Error('Failed to fetch customer data')
             }
             return res.json();
         })
         .then(response => {
                 console.log(response)
                 this.setState({
-                    customer : response.post,
+                    customer : response.data,
                     isLoading:false
                 })
         })
@@ -71,7 +71,15 @@ class  Customer extends Component {
         // const {classes} = this.props;
         
         const customers = this.state.customer.map((list, index) => {
-            return <CustomerComponent key={index} index={index} name={list.name} email={list.email} />
+            return <CustomerComponent 
+            key={index} index={index} 
+            name={list.name} 
+            email={list.email}
+            mobile={list.mobile}
+            address={list.address + ' ' + list.city + ' ' + list.state}
+            pincode={list.pincode}
+
+             />
         })
 
         return (
@@ -101,6 +109,9 @@ class  Customer extends Component {
                        <th style={{padding:'10px'}}>S No.</th>
                            <th style={{padding:'10px'}}>Name</th>
                            <th style={{padding:'10px'}}>Email</th>
+                           <th style={{padding:'10px'}}>Mobile</th>
+                           <th style={{padding:'10px'}}>Address</th>
+                           <th style={{padding:'10px'}}>Pincode</th>
                        </tr>
                        {customers}
                    </table>

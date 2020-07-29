@@ -195,18 +195,19 @@ class CreateProduct extends Component {
 
                                   <tr>
                                       <td>Choose Image</td>
-                                      <td>
+                                      <td style={{display:'flex', alignItems:'center'}}>
                                     <input type="file" style={{display:'none'}} onChange={this.fileChangeHandler} ref={chooseFile => this.chooseFile = chooseFile} accept="image/*"/>
                                     {
                                         this.state.selected ?
-                                        <img src={this.state.thumblink} style={{maxHeight:'200px',maxWidth:'300px',  margin:'1rem 0'}} />
+                                        <img src={this.state.thumblink} style={{maxHeight:'150px',maxWidth:'300px',  margin:'1rem 0'}} />
                                         :
-                                    
+                                        null
+                                    }
                                         <Button variant="outlined" color="primary" style={{height:'150px',width:'150px', border:'2px dotted rgb(177, 174, 174)'}} startIcon={<AddAPhotoIcon/>} size="large" onClick={() => this.chooseFile.click()}>
                                             {/* <span>Choose Image</span> */}
                                         </Button>
 
-                                    }
+                                   
                                     </td>
                                   </tr>
 

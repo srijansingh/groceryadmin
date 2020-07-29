@@ -217,10 +217,10 @@ render(){
        
 
            <Route
-            path="/myprofile"
+            path="/customers"
             exact
             render={props => (
-              <Account userId={this.state.userId}  token={this.state.token} />
+              <Customer userId={this.state.userId}  token={this.state.token} />
             )}
           />
 
