@@ -173,6 +173,14 @@ const styles = (theme) => ({
                     
 
                 </List>
+
+                <List>
+                    <Divider />
+                <ListItemLink key="5" onClick={this.props.logout}>
+                            <ListItemIcon><ExitToAppIcon style={{color:"blue"}} /></ListItemIcon>
+                            <ListItemText primary="Logout" />
+                    </ListItemLink>
+                </List>
             </div>
 
         )

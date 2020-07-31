@@ -31,7 +31,7 @@ class ViewSubategory extends Component {
             isLoading:true
         });
 
-        fetch('https://api.dholpurshare.com/admin/subcategory', {
+        fetch('https://server.dholpurshare.com/admin/subcategory', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
