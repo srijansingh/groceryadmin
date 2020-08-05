@@ -60,7 +60,7 @@ class ViewCategory extends Component {
     }
 
     handleDelete = (id) => {
-        fetch('https://server.dholpur.com/api/category/'+id, {
+        fetch('https://server.dholpurshare.com/admin/category/'+id, {
               method: "DELETE",
               headers: {
                   "Accept": "application/json",
@@ -91,7 +91,7 @@ class ViewCategory extends Component {
                     <td style={index%2!==0 ? {background:'#f1f1f1'} :{background:'#e6e6e6'}}>{index+1}</td>
                     <td><img src={item.imageurl} height='60px' /></td>
                     <td>{item.category}</td>
-                    <td><DeleteIcon style={{color:'#000', cursor:'pointer'}} /></td>
+                    <td><DeleteIcon onClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(item._id)};}} style={{color:'#000', cursor:'pointer'}} /></td>
                  </tr>
             )
         })

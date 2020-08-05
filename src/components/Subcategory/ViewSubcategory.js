@@ -60,7 +60,7 @@ class ViewSubategory extends Component {
     }
 
     handleDelete = (id) => {
-        fetch('https://api.edgiav.com/api/gallery/'+id, {
+        fetch('https://server.dholpurshare.com/admin/subcategory/'+id, {
               method: "DELETE",
               headers: {
                   "Accept": "application/json",
@@ -81,6 +81,7 @@ class ViewSubategory extends Component {
         })
       }
   
+  
     
     render() {
         const subcategory = this.state.subcategory.map((item, index) => {
@@ -91,7 +92,7 @@ class ViewSubategory extends Component {
                     <td style={index%2!==0 ? {background:'#f1f1f1'} :{background:'#e6e6e6'}}>{index+1}</td>
                     <td ><img src={item.imageurl} height='60px' /></td>
                     <td>{item.subcategory}</td>
-                    <td><DeleteIcon style={{color:'#000', cursor:'pointer'}} /></td>
+                    <td><DeleteIcon onClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(item._id)};}} style={{color:'#000', cursor:'pointer'}} /></td>
                  </tr>
             )
         })
@@ -101,7 +102,7 @@ class ViewSubategory extends Component {
                     <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem'}}>
                     
                         <Typography style={{color:'white'}}>
-                            View Category
+                            View SubCategory
                         </Typography>
 
                     </div>

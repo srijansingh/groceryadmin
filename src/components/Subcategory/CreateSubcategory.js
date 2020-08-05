@@ -25,14 +25,49 @@ class CreateSubcategory extends Component {
         super();
         this.state = {
             thumblink:null,
-            imagelink: null,
-            category:null,
+            imageurl: null,
+            categoryid:null,
             subcategory:null,  
-           
-            isLoading:false,
+            categories:[],
             selected:false
         }
     }
+
+
+
+
+    componentDidMount=()=>{
+        fetch('https://server.dholpurshare.com/admin/category',{
+            method:'GET',
+            headers:{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                Authorization:'Bearer '+this.props.token
+            }
+        })
+        .then(res => {
+            if(res.status !==200){
+                throw new Error('Failed to fetch the product')
+            }
+            return res.json()
+        }).then(response => {
+            console.log(response.data)
+            this.setState({
+                categories:response.data,
+                isLoading:false
+            }) 
+        })
+        .catch(err => {
+          this.setState({
+            isLoading:false
+          })
+        })
+
+
+
+
+    }
+    
 
     fileChangeHandler = (event) => {
         console.log(event.target.files[0]);
@@ -53,13 +88,14 @@ class CreateSubcategory extends Component {
             ref.getDownloadURL().then((url)=>{
                 console.log(url)
                 this.setState({
-                    imagelink : url
+                    imageurl : url
                 })
-                fetch('https://api.edgiav.com/api/gallery', {
+                fetch('https://server.dholpurshare.com/admin/subcategory', {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization:'Bearer '+this.props.token
                     },
                     body: JSON.stringify(this.state)
                 }).then(result => {
@@ -68,7 +104,7 @@ class CreateSubcategory extends Component {
                         this.setState({
                             isLoading: false
                         })
-                        alert('Post Added Successfully')
+                        alert('SubCategory Added Successfully')
                         window.location.reload(false);
                        
                     })
@@ -85,6 +121,11 @@ class CreateSubcategory extends Component {
 
 
     render() {
+
+        const subCategory  = this.state.categories.map((item, index) => {
+            return <option value={item._id}>{item.category}</option>
+        })
+
         return (
             <div>
                 <div>
@@ -102,14 +143,14 @@ class CreateSubcategory extends Component {
 
                                   <tr>
                                       <td>Enter Subcategory</td>
-                                      <td><input type="text" placeholder="Subcategory" onChange={(event)=>{this.setState({category:event.target.value})}}/></td>
+                                      <td><input type="text" placeholder="Subcategory" onChange={(event)=>{this.setState({subcategory:event.target.value})}}/></td>
                                   </tr>
                         
                                   <tr>
                                       <td>Enter Category</td>
                                       <td>
-                                          <select color="primary" variant="outlined"  onChange={(event)=>{this.setState({category:event.target.value})}}>
-                                                <option value="1">Option</option>
+                                          <select color="primary" variant="outlined"  onChange={(event)=>{this.setState({categoryid:event.target.value})}}>
+                                          {subCategory}
                                           </select>
                                     </td>
                                   </tr>

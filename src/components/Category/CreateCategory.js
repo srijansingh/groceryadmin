@@ -25,7 +25,7 @@ class CreateCategory extends Component {
         super();
         this.state = {
             thumblink:null,
-            imagelink: null,
+            imageurl: null,
             category:null,  
             title:null,
             isLoading:false,
@@ -42,6 +42,8 @@ class CreateCategory extends Component {
     }
 
 
+    
+
     firebaseupload=async()=>{
         this.setState({isLoading : true})
         const response = await fetch(this.state.thumblink)
@@ -52,13 +54,14 @@ class CreateCategory extends Component {
             ref.getDownloadURL().then((url)=>{
                 console.log(url)
                 this.setState({
-                    imagelink : url
+                    imageurl : url
                 })
-                fetch('https://server.edgiav.com/api/gallery', {
+                fetch('https://server.dholpurshare.com/admin/category', {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
-                        "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization:'Bearer '+this.props.token
                     },
                     body: JSON.stringify(this.state)
                 }).then(result => {
@@ -67,7 +70,7 @@ class CreateCategory extends Component {
                         this.setState({
                             isLoading: false
                         })
-                        alert('Post Added Successfully')
+                        alert('Catagory Added Successfully')
                         window.location.reload(false);
                        
                     })

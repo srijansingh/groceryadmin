@@ -39,7 +39,8 @@ class EditProduct extends Component {
             isLoading:false,
             selected:false,
             categories:[],
-            subcategories:[]
+            subcategories:[],
+            imageurl:null
         }
     }
 
@@ -67,7 +68,8 @@ class EditProduct extends Component {
                 costprice:response.data.costprice,
                 sellingprice:response.data.sellingprice,
                 description:response.data.description,
-                isLoading:false
+                isLoading:false,
+                imageurl:response.data.imageurl
             }) 
         })
         .catch(err => {
@@ -146,6 +148,19 @@ class EditProduct extends Component {
                                   </tr>
 
                                   <tr>
+                                      <td>Image
+
+                                      </td>
+
+                                        <td>
+                                        <img src={this.state.imageurl} style={{height:'150px'}}/>
+                                        </td>
+                                      
+                                  </tr>
+
+
+
+                                  <tr>
                                       <td>Product SKU</td>
                                       <td><input disabled type="text" placeholder="Product SKU" value={this.state.sku} onChange={(event)=>{this.setState({sku:event.target.value})}}/></td>
                                   </tr>
@@ -177,6 +192,8 @@ class EditProduct extends Component {
                                           }
                                       </td>
                                   </tr>
+
+
                             </table>
                         </div>
                         
