@@ -150,6 +150,7 @@ class CreateSubcategory extends Component {
                                       <td>Enter Category</td>
                                       <td>
                                           <select color="primary" variant="outlined"  onChange={(event)=>{this.setState({categoryid:event.target.value})}}>
+                                          <option disabled selected>Select Category</option>
                                           {subCategory}
                                           </select>
                                     </td>
