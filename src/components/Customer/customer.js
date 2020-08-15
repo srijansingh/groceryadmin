@@ -2,7 +2,14 @@ import React, {Component} from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import CustomerComponent from "./component/customerComponent";
-
+import ReactPaginate from 'react-paginate';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const styles = (theme) => ({
     root: {
@@ -21,12 +28,24 @@ class  Customer extends Component {
         super();
         this.state = {
             isLoading: false,
-            customer:[]
+            customer:[],
+            count:0,
+            offset: 0,
+            perPage: 10,
+            currentPage: 0
            
-        }
+        };
+        this.handlePageClick = this
+        .handlePageClick
+        .bind(this);
     }
 
     componentDidMount(){
+        this.receivedData()
+
+    }
+
+    receivedData = () => {
         this.setState({
             isLoading:true
         })
@@ -50,6 +69,8 @@ class  Customer extends Component {
                 console.log(response)
                 this.setState({
                     customer : response.data,
+                    count:response.data.length,
+                    pageCount: Math.ceil(response.data.length / this.state.perPage),
                     isLoading:false
                 })
         })
@@ -60,15 +81,24 @@ class  Customer extends Component {
             })
             alert(err)
         })
-
     }
 
+    handlePageClick = (e) => {
+        const selectedPage = e.selected;
+        const offset = selectedPage * this.state.perPage;
 
+        this.setState({
+            currentPage: selectedPage,
+            offset: offset
+        }, () => {
+            this.receivedData()
+        });
 
+    };
        
     render(){
 
-        // const {classes} = this.props;
+        const {classes} = this.props;
         
         const customers = this.state.customer.map((list, index) => {
             return <CustomerComponent 
@@ -84,18 +114,21 @@ class  Customer extends Component {
 
         return (
             <div>
-            <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem'}}>
-               
-                <Typography style={{color:'white'}}>
-                  Customer
-               </Typography>
+            <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem', display:'flex', justifyContent:'space-between'}}>
+                    
+                    <Typography style={{color:'white'}}>
+                        Customers
+                    </Typography>
 
-              
-               
-                
-            </div>
+                    <Typography style={{color:'white'}}>
+                    {
+                        this.state.isLoading ? 'Loading...' : this.state.count +' Customers'
+                    }
+                    </Typography>
+
+                </div>
             <div style={{
-                height:'80vh',
+                height:'90vh',
                 overflowY:'scroll',
                 overflowX:'hidden',
                 display:'flex',
@@ -104,17 +137,38 @@ class  Customer extends Component {
                 padding:'0.5rem'
                 }}>
                 <div style={{ width:'100%', display:'flex', flexDirection:'column', alignItems:'center'}}>
-                   <table style={{ width:'700px'}}>
-                       <tr style={{ background:'#e6e6e6'}}>
-                       <th style={{padding:'10px'}}>S No.</th>
-                           <th style={{padding:'10px'}}>Name</th>
-                           <th style={{padding:'10px'}}>Email</th>
-                           <th style={{padding:'10px'}}>Mobile</th>
-                           <th style={{padding:'10px'}}>Address</th>
-                           <th style={{padding:'10px'}}>Pincode</th>
-                       </tr>
-                       {customers}
-                   </table>
+                   <TableContainer className={classes.container} component={Paper}>
+                        <Table className={classes.table} aria-label="simple table">
+                            <TableHead style={{fontWeight:'bold'}}>
+                            <TableRow>
+                                
+                                <TableCell align="center">Name</TableCell>
+                                <TableCell align="center">Email</TableCell>
+                                <TableCell align="center">Mobile</TableCell>
+                                <TableCell align="center">Address</TableCell>
+                                <TableCell align="center">Pincode</TableCell>
+
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {customers}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    <ReactPaginate
+                            previousLabel={"prev"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            pageCount={this.state.pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"}
+                        />
                 </div>
 
                 

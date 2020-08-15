@@ -41,6 +41,7 @@ class ViewProduct extends Component {
         super();
         this.state = {
             isLoading : false,
+            isUpdating : false,
             product:[],
             count:0,
             offset: 0,
@@ -127,6 +128,9 @@ class ViewProduct extends Component {
       }
   
       changeToInactive = (id) => {
+          this.setState({
+              isUpdating:true
+          })
         fetch('https://dhols.herokuapp.com/admin/status', {
             method: "PUT",
             headers: {
@@ -138,19 +142,25 @@ class ViewProduct extends Component {
         })
         .then(response => {
             this.setState({
-            blogpost:false
+                isUpdating:false
             })
             alert("Status Updated Successfully");
             window.location.reload(false);
         })
         .catch(err => {
-        
+            this.setState({
+                isUpdating:false
+            })
             alert("Something went wrong")
         })
       }
 
 
       changeToActive = (id) => {
+        this.setState({
+            isUpdating:true
+        })
+
         fetch('https://dhols.herokuapp.com/admin/status', {
             method: "PUT",
             headers: {
@@ -162,13 +172,15 @@ class ViewProduct extends Component {
         })
         .then(response => {
             this.setState({
-            blogpost:false
+                isUpdating:false
             })
             alert("Status Updated Successfully");
             window.location.reload(false);
         })
         .catch(err => {
-        
+            this.setState({
+                isUpdating:false
+            })
             alert("Something went wrong")
         })
       }
@@ -214,11 +226,15 @@ class ViewProduct extends Component {
                 <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem', display:'flex', justifyContent:'space-between'}}>
                     
                     <Typography style={{color:'white'}}>
-                        Product 
+                        {
+                            this.state.isUpdating ? 'Please wait...' :'Products'
+                        }
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Products
+                        {
+                            this.state.isLoading ? 'Loading...' : this.state.count +' Products'
+                        }
                     </Typography>
 
                 </div>

@@ -137,7 +137,9 @@ class ShippedOrder extends Component {
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Shipping Orders
+                    {
+                            this.state.isLoading ? 'Loading...' : this.state.count +' Shipped Order'
+                        } 
                     </Typography>
 
                 </div>

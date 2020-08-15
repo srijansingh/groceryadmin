@@ -140,7 +140,9 @@ class ViewOrder extends Component {
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Orders Recieved
+                    {
+                            this.state.isLoading ? 'Loading...' : this.state.count +' Total Orders'
+                        } 
                     </Typography>
 
                 </div>

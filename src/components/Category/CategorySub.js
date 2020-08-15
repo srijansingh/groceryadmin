@@ -151,7 +151,9 @@ class ViewCatategorySub extends Component {
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Subcategories
+                    {
+                            this.state.isLoading ? 'Loading...' : this.state.count +' Subcategories'
+                        }
                     </Typography>
 
                 </div>

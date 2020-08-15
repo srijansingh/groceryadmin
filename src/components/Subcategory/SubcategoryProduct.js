@@ -219,7 +219,9 @@ class SubProduct extends Component {
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Products
+                    {
+                            this.state.isLoading ? 'Loading...' : this.state.count +' Products'
+                        }
                     </Typography>
 
                 </div>

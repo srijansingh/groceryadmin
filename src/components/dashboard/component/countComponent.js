@@ -31,7 +31,7 @@ class CountComponent extends Component {
                    <div style={{width:'100%'}}>
                         <div style={{display:'flex', height:'100%', flexDirection:'column', justifyContent:'space-around',alignItems:'center'}}>
                                 <div style={{fontSize:'1rem',fontWeight:'bold', color:'lawngreen'}}>Total Product</div>
-                                <div style={{fontSize:'1.5rem',color:'lawngreen', fontWeight:'bold'}}>{this.props.active}</div>
+                                <div style={{fontSize:'1.5rem',color:'lawngreen', fontWeight:'bold'}}>{this.props.product}</div>
                         </div>
                    </div>
 
@@ -45,7 +45,7 @@ class CountComponent extends Component {
                    <div style={{width:'100%'}}>
                         <div style={{display:'flex', height:'100%', flexDirection:'column', justifyContent:'space-around',alignItems:'center'}}>
                                 <div style={{fontSize:'1rem',fontWeight:'bold', color:'orange'}}>Total Orders</div>
-                                <div style={{fontSize:'1.5rem',color:'orange', fontWeight:'bold'}}>{this.props.total}</div>
+                                <div style={{fontSize:'1.5rem',color:'orange', fontWeight:'bold'}}>{this.props.order}</div>
                         </div>
                    </div>
                    
@@ -59,7 +59,7 @@ class CountComponent extends Component {
                    <div style={{width:'100%'}}>
                         <div style={{display:'flex', height:'100%', flexDirection:'column', justifyContent:'space-around',alignItems:'center'}}>
                                 <div style={{fontSize:'1rem',fontWeight:'bold', color:'purple'}}>Total Customers</div>
-                                <div style={{fontSize:'1.5rem',color:'purple', fontWeight:'bold'}}>{this.props.category}</div>
+                                <div style={{fontSize:'1.5rem',color:'purple', fontWeight:'bold'}}>{this.props.customer}</div>
                         </div>
                    </div>
                    
@@ -73,7 +73,7 @@ class CountComponent extends Component {
                    <div style={{width:'100%'}}>
                         <div style={{display:'flex', height:'100%', flexDirection:'column', justifyContent:'space-around',alignItems:'center'}}>
                                 <div style={{fontSize:'1rem',fontWeight:'bold', color:'blue'}}>Total Deliveries</div>
-                                <div style={{fontSize:'1.5rem',color:'blue', fontWeight:'bold'}}>{this.props.brand}</div>
+                                <div style={{fontSize:'1.5rem',color:'blue', fontWeight:'bold'}}>{this.props.delivered}</div>
                         </div>
                    </div>
                    

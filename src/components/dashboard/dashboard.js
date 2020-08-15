@@ -33,7 +33,11 @@ class  Dashboard extends Component {
             category:0,
             brand:0,
             active:0,
-           order:[]
+            order:[],
+            orders:0,
+            delivered:0,
+            product:0,
+            customer:0
         }
     }
 
@@ -42,7 +46,7 @@ class  Dashboard extends Component {
             isLoading:true
         });
 
-        fetch('https://server.dholpurshare.com/admin/order', {
+        fetch('https://dhols.herokuapp.com/admin/processing', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -67,10 +71,96 @@ class  Dashboard extends Component {
               isLoading:false
             })
         })
+
+        this.countFunction();
                 
     }
     
-
+    countFunction = () => {
+        fetch('https://server.dholpurshare.com/admin/order', {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer '+this.props.token
+                }
+            })
+            .then(res => {
+                if(res.status !==200){
+                    throw new Error('Failed to fetch the product')
+                }
+                return res.json()
+            })
+            .then(response => {
+                this.setState({
+                    orders:response.data.length
+                }) 
+            })
+    
+    
+    
+            fetch('https://dhols.herokuapp.com/admin/delivered', {
+              method: "GET",
+              headers: {
+                  "Accept": "application/json",
+                  "Content-Type": "application/json",
+                  Authorization: 'Bearer '+this.props.token
+              }
+            })
+            .then(res => {
+                if(res.status !==200){
+                    throw new Error('Failed to fetch the product')
+                }
+                return res.json()
+            })
+            .then(response => {
+                this.setState({
+                  delivered:response.data.length
+                }) 
+            })
+    
+            fetch('https://dhols.herokuapp.com/admin/product', {
+              method: "GET",
+              headers: {
+                  "Accept": "application/json",
+                  "Content-Type": "application/json",
+                  Authorization: 'Bearer '+this.props.token
+              }
+            })
+            .then(res => {
+                if(res.status !==200){
+                    throw new Error('Failed to fetch the product')
+                }
+                return res.json()
+            })
+            .then(response => {
+                this.setState({
+                    product:response.data.length
+                }) 
+            })
+    
+            fetch('https://dhols.herokuapp.com/admin/customer', {
+              method: "GET",
+              headers: {
+                  "Accept": "application/json",
+                  "Content-Type": "application/json",
+                  Authorization: 'Bearer '+this.props.token
+              }
+            })
+            .then(res => {
+                if(res.status !==200){
+                    throw new Error('Failed to fetch the product')
+                }
+                return res.json()
+            })
+            .then(response => {
+                this.setState({
+                    customer:response.data.length
+                }) 
+            })
+      
+      }
+     
 
 
        
@@ -87,7 +177,7 @@ class  Dashboard extends Component {
                         {item.referenceid}
                     </TableCell>
                     <TableCell align="right">{item.mobile}</TableCell>
-                    <TableCell align="right">{item.status}</TableCell>
+                    <TableCell align="right" style={{textTransform: 'capitalize'}}>{item.status}</TableCell>
                     <TableCell align="right"><Button color="primary"  style={{ textDecoration:'none', color:'blue'}}  size="small" href={'/order/'+item._id}>View</Button></TableCell>
                 </TableRow>
             )
@@ -115,14 +205,19 @@ class  Dashboard extends Component {
                
                 justifyContent:'space-between'
                 }}>
-                <CountComponent total={this.state.all} brand={this.state.brand} category={this.state.category} active={this.state.active} />
+                <CountComponent 
+                   order={this.state.orders}
+                   product={this.state.product}
+                   delivered={this.state.delivered}
+                   customer={this.state.customer}
+                />
             </div>
             <div>
                 <div style={{padding:'1rem'}}>
             <Paper elevation={3} style={{ padding:'1rem', width:'600px', minHeight:'400px'}}>
                 <div style={{display:'flex', justifyContent:'space-between'}}>
                 <Typography style={{color:'black', fontWeight:'bold', padding:'0.5rem 0',background:'white'}}>Recent Orders</Typography>
-                <Link style={{color:'blue',textDecoration:'none', fontWeight:'bold', padding:'0.5rem 0'}} href="#">View Pending Orders</Link>
+                <a style={{color:'blue',textDecoration:'none', fontWeight:'bold', padding:'0.5rem 0'}} href="/processing">View Pending Orders</a>
                 </div>
                 <TableContainer component={Paper}>
                     <Table className={classes.table} aria-label="simple table">

@@ -137,7 +137,9 @@ class ProcessingOrder extends Component {
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Processing Order
+                    {
+                            this.state.isLoading ? 'Loading...' : this.state.count +' Processing Order'
+                        } 
                     </Typography>
 
                 </div>

@@ -142,7 +142,7 @@ class ViewSubategory extends Component {
         return (
             <div>
                 <div>
-                    <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem'}}>
+                    <div >
                     
                     <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem', display:'flex', justifyContent:'space-between'}}>
                     
@@ -151,7 +151,9 @@ class ViewSubategory extends Component {
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Subcategories
+                    {
+                            this.state.isLoading ? 'Loading...' : this.state.count +' Subcategories'
+                        }
                     </Typography>
 
                 </div>

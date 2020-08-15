@@ -24,6 +24,7 @@ import ShippedOrder from './components/Order/Shipped';
 import ViewCatategorySub from './components/Category/CategorySub';
 import SubProduct from './components/Subcategory/SubcategoryProduct';
 
+
 class App extends Component {
   state = {
     isAuth: false,
@@ -31,7 +32,8 @@ class App extends Component {
     userId: null,
     user:null,
     authLoading: false,
-    error: null
+    error: null,
+    
   };
 
 componentDidMount() {
@@ -50,9 +52,11 @@ componentDidMount() {
     new Date(expiryDate).getTime() - new Date().getTime();
     this.setState({ isAuth: true, token: token, userId: userId, user: user  });
     this.setAutoLogout(remainingMilliseconds);
+
+
   }
 
- 
+  
 
 logoutHandler = () => {
     this.setState({ isAuth: false, token: null });
@@ -155,7 +159,15 @@ render(){
             path="/"
             exact
             render={props => (
-              <Dashboard userId={this.state.userId} logout={this.logoutHandler}  token={this.state.token} />
+              <Dashboard 
+                userId={this.state.userId} 
+                logout={this.logoutHandler}  
+                token={this.state.token} 
+                order={this.state.order}
+                product={this.state.product}
+                delivered={this.state.delivered}
+                customer = {this.state.customer}
+              />
             )}
           />
 
