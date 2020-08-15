@@ -43,13 +43,19 @@ const styles = (theme) => ({
         super();
         this.state={
             open:false,
-            category:false
+            category:false,
+            order:false
         }
     }
 
     handleCategory = () => {
         this.setState({
             category:!this.state.category
+        })
+    }
+    handleOrder = () => {
+        this.setState({
+            order:!this.state.order
         })
     }
 
@@ -71,10 +77,6 @@ const styles = (theme) => ({
                             <ListItemText primary="Dashboard" />
                     </ListItemLink>
 
-                    <ListItemLink key="0"  href="/order">
-                            <ListItemIcon><AssignmentTurnedInSharpIcon style={{color:"blue"}}/></ListItemIcon>
-                            <ListItemText primary="Orders" />
-                    </ListItemLink>
                    
 
                    
@@ -82,6 +84,52 @@ const styles = (theme) => ({
                             <ListItemIcon><FaceIcon style={{color:"blue"}} /></ListItemIcon>
                             <ListItemText primary="Customers" />
                     </ListItemLink>
+
+                    <Divider />
+
+                    <ListItem button onClick={this.handleOrder}>
+                        <ListItemIcon >
+                        <CategoryIcon style={{color:"blue"}}/>
+                        </ListItemIcon>
+                        <ListItemText primary="Order" />
+                        {this.state.order ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={this.state.order} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+
+                        <NestedListItemLink key="7" className={classes.nested} href="/order">
+                            <ListItemIcon>
+                                <VisibilityIcon style={{color:"black"}}/>
+                                </ListItemIcon>
+                                <ListItemText primary="All Orders" />
+                        </NestedListItemLink>
+
+                        <NestedListItemLink key="7" className={classes.nested} href="/processing">
+                            <ListItemIcon>
+                                <VisibilityIcon style={{color:"black"}}/>
+                                </ListItemIcon>
+                                <ListItemText primary="Processing" />
+                        </NestedListItemLink>
+
+                        <NestedListItemLink key="7" className={classes.nested} href="/delivered">
+                            <ListItemIcon>
+                                <VisibilityIcon style={{color:"black"}}/>
+                                </ListItemIcon>
+                                <ListItemText primary="Delivered" />
+                        </NestedListItemLink>
+
+                        <NestedListItemLink key="7" className={classes.nested} href="/shipped">
+                            <ListItemIcon>
+                                <VisibilityIcon style={{color:"black"}}/>
+                                </ListItemIcon>
+                                <ListItemText primary="Shipped" />
+                        </NestedListItemLink>
+
+                        
+
+                        
+                        </List>
+                    </Collapse>
 
                     <Divider />
 

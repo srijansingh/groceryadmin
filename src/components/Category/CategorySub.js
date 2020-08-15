@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
 import { withStyles } from "@material-ui/core/styles";
-import { Typography, Button } from "@material-ui/core";
+import { Typography,Button } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import ReactPaginate from 'react-paginate';
-import Table from '@material-ui/core/Table';
+import Table from '@material-ui/core/Table'; 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import "./ViewOrder.css";
 
+const token = localStorage.getItem('token');
 const styles = (theme) => ({
+    container: {
+        maxWidth: 600,
+      },
     root: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -26,23 +28,17 @@ const styles = (theme) => ({
     }});
   
 
-class ViewOrder extends Component {
+class ViewCatategorySub extends Component {
     constructor(){
         super();
         this.state = {
             isLoading : false,
-            order:[],
-            id:null,
-            status:null,
+            subcategory:[],
             count:0,
             offset: 0,
-            perPage: 10,
+            perPage: 7,
             currentPage: 0
-        };
-
-        this.handlePageClick = this
-        .handlePageClick
-        .bind(this);
+        }
     }
 
     componentDidMount(){
@@ -50,18 +46,17 @@ class ViewOrder extends Component {
                 
     }
 
-   
     receivedData = () => {
         this.setState({
             isLoading:true
         });
 
-        fetch('https://server.dholpurshare.com/admin/order', {
+        fetch('https://dhols.herokuapp.com/admin/category/subcategory/'+ this.props.match.params._id, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                Authorization: 'Bearer '+this.props.token
+                Authorization: 'Bearer '+ token
             }
         })
         .then(res => {
@@ -72,7 +67,7 @@ class ViewOrder extends Component {
         }).then(response => {
             console.log(response.data)
             this.setState({
-                order:response.data,
+                subcategory:response.data,
                 count:response.data.length,
                 pageCount: Math.ceil(response.data.length / this.state.perPage),
                 isLoading:false
@@ -84,6 +79,7 @@ class ViewOrder extends Component {
             })
         })
     }
+
 
     handlePageClick = (e) => {
         const selectedPage = e.selected;
@@ -97,35 +93,48 @@ class ViewOrder extends Component {
         });
 
     };
+
+    handleDelete = (id) => {
+        fetch('https://server.dholpurshare.com/admin/subcategory/'+id, {
+              method: "DELETE",
+              headers: {
+                  "Accept": "application/json",
+                  "Content-Type": "application/json",
+                  Authorization: 'Bearer '+this.props.token
+              }
+          })
+        .then(response => {
+          this.setState({
+            blogpost:false
+          })
+          alert("Deleted Successfully");
+          window.location.reload(false);
+        })
+        .catch(err => {
+         
+          alert("Something went wrong")
+        })
+      }
+  
+  
     
     render() {
+
         const {classes} = this.props;
-        const slice = this.state.order.slice(this.state.offset, this.state.offset + this.state.perPage)
-        const order = slice.map((item, index) => {
+        const slice = this.state.subcategory.slice(this.state.offset, this.state.offset + this.state.perPage)
+        const subcategory = slice.map((item, index) => {
             return (
 
-               
-                
-
-
-
                 <TableRow key={index}>
-                    <TableCell align="center">{item.referenceid}</TableCell>
+                    <TableCell align="center"><img src={item.imageurl} height='60px' /></TableCell>
+                    <TableCell align="center">{item.subcategory}</TableCell>
                     <TableCell align="center">
-                        {item.sku.split(',').slice(0,4).map(sku => {
-                            return <div><strong>{sku}</strong><br /></div>
-                        })}
+                        <Button size="small" variant="contained" color="secondary" startIcon={<DeleteIcon />}  onClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(item._id)};}}>Delete</Button>
+
                     </TableCell>
-                    <TableCell align="center">
-                        {item.titles.split(',').slice(0,4).map(title => {
-                            return <div><strong>{title}</strong><br /></div>
-                        })}
-                    </TableCell>
-                    <TableCell align="center">{item.address}</TableCell>
-                    <TableCell align="center">{item.mobile}</TableCell>
-                    <TableCell align="center" style={{textTransform: 'capitalize'}}>{item.status}</TableCell>
+
                     <TableCell>
-                        <Button variant="contained"size="small" color="primary"  href={'/order/'+item._id}>View</Button>
+                        <Button variant="contained"size="small" color="primary" startIcon={<VisibilityIcon/>} href={'/subcategory/'+item._id}>View</Button>
                     </TableCell>
                 </TableRow>
             )
@@ -133,40 +142,38 @@ class ViewOrder extends Component {
         return (
             <div>
                 <div>
-                <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem', display:'flex', justifyContent:'space-between'}}>
+                    <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem'}}>
+                    
+                    <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem', display:'flex', justifyContent:'space-between'}}>
                     
                     <Typography style={{color:'white'}}>
-                        Orders
+                        Subcategories
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Orders Recieved
+                        {this.state.count} Subcategories
                     </Typography>
 
                 </div>
 
-                    <div style={{padding:'1rem',display:'flex', flexDirection:'column',justifyContent:'space-around', alignItems:'center'}}>
-                      
+                    </div>
+
+                    <div  style={{padding:'1rem',display:'flex', flexDirection:'column',justifyContent:'space-around', alignItems:'center'}}>
                        <TableContainer className={classes.container} component={Paper}>
                         <Table className={classes.table} aria-label="simple table">
                             <TableHead style={{fontWeight:'bold'}}>
                             <TableRow>
                                 
-                                <TableCell align="center">Ref. Id</TableCell>
-                                <TableCell align="center">SKU</TableCell>
+                                <TableCell align="center">Preview</TableCell>
                                 <TableCell align="center">Title</TableCell>
-                                <TableCell align="center">Address</TableCell>
-                                <TableCell align="center">Mobile</TableCell>
-                                <TableCell align="center">Status</TableCell>
-                                <TableCell align="center">Action</TableCell>                    
+                                <TableCell align="center" colSpan={2}>Action</TableCell>                    
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {order}
+                                {subcategory}
                             </TableBody>
                         </Table>
                         </TableContainer>
-
                        <ReactPaginate
                             previousLabel={"prev"}
                             nextLabel={"next"}
@@ -188,7 +195,7 @@ class ViewOrder extends Component {
 }
 
 
-export default  withStyles(styles, {withThemes: true})(ViewOrder)
+export default  withStyles(styles, {withThemes: true})(ViewCatategorySub)
 
 
  /* <div key={index} onDoubleClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(list._id)};}} className="gallery-card">

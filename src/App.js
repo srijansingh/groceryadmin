@@ -17,6 +17,12 @@ import ViewProduct from './components/Product/ViewProduct';
 import EditProduct from './components/Product/EditProduct';
 import ViewOrder from './components/Order/ViewOrder';
 import SingleOrder from './components/Order/SingleOrder';
+import ProcessingOrder from './components/Order/Processing';
+import DeliveredOrder from './components/Order/Delivered';
+import ShippedOrder from './components/Order/Shipped';
+
+import ViewCatategorySub from './components/Category/CategorySub';
+import SubProduct from './components/Subcategory/SubcategoryProduct';
 
 class App extends Component {
   state = {
@@ -177,7 +183,8 @@ render(){
           />
 
 <Route exact token={this.state.token} path="/product/:_id" component={EditProduct}/>  
-
+<Route exact token={this.state.token} path="/category/:_id" component={ViewCatategorySub}/> 
+<Route exact token={this.state.token} path="/subcategory/:_id" component={SubProduct}/> 
         <Route
             path="/view-category"
             exact
@@ -186,14 +193,38 @@ render(){
             )}
           />
 
-<Route
+      <Route
             path="/order"
             exact
             render={props => (
               <ViewOrder userId={this.state.userId}  token={this.state.token} />
             )}
           />
-<Route exact token={this.state.token} path="/order/:id" component={SingleOrder}/>  
+
+      <Route
+            path="/processing"
+            exact
+            render={props => (
+              <ProcessingOrder userId={this.state.userId}  token={this.state.token} />
+            )}
+          />
+
+      <Route
+            path="/delivered"
+            exact
+            render={props => (
+              <DeliveredOrder userId={this.state.userId}  token={this.state.token} />
+            )}
+          />
+          <Route
+            path="/shipped"
+            exact
+            render={props => (
+              <ShippedOrder userId={this.state.userId}  token={this.state.token} />
+            )}
+          />
+
+      <Route exact token={this.state.token} path="/order/:id" component={SingleOrder}/>  
 
       <Route
             path="/view-subcategory"

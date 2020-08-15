@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { withStyles } from "@material-ui/core/styles";
 import { Typography, Button } from "@material-ui/core";
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import ReactPaginate from 'react-paginate';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -26,7 +23,7 @@ const styles = (theme) => ({
     }});
   
 
-class ViewOrder extends Component {
+class ShippedOrder extends Component {
     constructor(){
         super();
         this.state = {
@@ -56,7 +53,7 @@ class ViewOrder extends Component {
             isLoading:true
         });
 
-        fetch('https://server.dholpurshare.com/admin/order', {
+        fetch('https://dhols.herokuapp.com/admin/shipped', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -140,7 +137,7 @@ class ViewOrder extends Component {
                     </Typography>
 
                     <Typography style={{color:'white'}}>
-                        {this.state.count} Orders Recieved
+                        {this.state.count} Shipping Orders
                     </Typography>
 
                 </div>
@@ -188,11 +185,7 @@ class ViewOrder extends Component {
 }
 
 
-export default  withStyles(styles, {withThemes: true})(ViewOrder)
+export default  withStyles(styles, {withThemes: true})(ShippedOrder)
 
 
- /* <div key={index} onDoubleClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(list._id)};}} className="gallery-card">
-                    <div className="gallery-image">
-                        <img src={list.imagelink} alt={list.title+" edgav"}/>
-                    </div>
-                </div> */
+ 

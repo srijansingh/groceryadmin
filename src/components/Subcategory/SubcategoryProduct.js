@@ -13,9 +13,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import "./ViewProduct.css";
+
 import { Link } from 'react-router-dom';
 
+const token = localStorage.getItem('token');
 const styles = (theme) => ({
     table: {
         minWidth: 800,
@@ -36,7 +37,7 @@ const styles = (theme) => ({
     }});
   
 
-class ViewProduct extends Component {
+class SubProduct extends Component {
     constructor(){
         super();
         this.state = {
@@ -62,12 +63,12 @@ class ViewProduct extends Component {
             isLoading:true
         });
 
-        fetch('https://server.dholpurshare.com/admin/product', {
+        fetch('https://dhols.herokuapp.com/admin/subcategory/product/' + this.props.match.params._id, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                Authorization: 'Bearer '+this.props.token
+                Authorization: 'Bearer '+ token
             }
         })
         .then(res => {
@@ -132,7 +133,7 @@ class ViewProduct extends Component {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                Authorization: 'Bearer '+this.props.token
+                Authorization: 'Bearer '+token
             },
             body: JSON.stringify({id:id, status:'inactive'})
         })
@@ -156,7 +157,7 @@ class ViewProduct extends Component {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-                Authorization: 'Bearer '+this.props.token
+                Authorization: 'Bearer '+token
             },
             body: JSON.stringify({id:id, status:'active'})
         })
@@ -263,5 +264,5 @@ class ViewProduct extends Component {
 }
 
 
-export default  withStyles(styles, {withThemes: true})(ViewProduct)
+export default  withStyles(styles, {withThemes: true})(SubProduct)
 

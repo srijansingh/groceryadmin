@@ -1,11 +1,26 @@
 import React, { Component } from 'react'
 import { withStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
+import { Typography, Button } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+
 import "./ViewCategory.css";
+import ReactPaginate from 'react-paginate';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const styles = (theme) => ({
+    table: {
+       
+      },
+      container: {
+        maxWidth: 600,
+      },
     root: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -22,11 +37,24 @@ class ViewCategory extends Component {
         super();
         this.state = {
             isLoading : false,
-            category:[]
-        }
+            category:[],
+            count:0,
+            offset: 0,
+            perPage: 15,
+            currentPage: 0
+        };
+
+        this.handlePageClick = this
+        .handlePageClick
+        .bind(this);
     }
 
     componentDidMount(){
+        this.receivedData()
+                
+    }
+
+    receivedData = () => {
         this.setState({
             isLoading:true
         });
@@ -48,6 +76,8 @@ class ViewCategory extends Component {
             console.log(response.data)
             this.setState({
                 category:response.data,
+                count:response.data.length,
+                pageCount: Math.ceil(response.data.length / this.state.perPage),
                 isLoading:false
             }) 
         })
@@ -56,8 +86,22 @@ class ViewCategory extends Component {
               isLoading:false
             })
         })
-                
     }
+
+
+    handlePageClick = (e) => {
+        const selectedPage = e.selected;
+        const offset = selectedPage * this.state.perPage;
+
+        this.setState({
+            currentPage: selectedPage,
+            offset: offset
+        }, () => {
+            this.receivedData()
+        });
+
+    };
+
 
     handleDelete = (id) => {
         fetch('https://server.dholpurshare.com/admin/category/'+id, {
@@ -83,43 +127,74 @@ class ViewCategory extends Component {
   
     
     render() {
-        const category = this.state.category.map((item, index) => {
+
+        const {classes} = this.props;
+        const slice = this.state.category.slice(this.state.offset, this.state.offset + this.state.perPage)
+        const category = slice.map((item, index) => {
             return (
 
-               
-                <tr  key={index}>
-                    <td style={index%2!==0 ? {background:'#f1f1f1'} :{background:'#e6e6e6'}}>{index+1}</td>
-                    <td><img src={item.imageurl} height='60px' /></td>
-                    <td>{item.category}</td>
-                    <td><DeleteIcon onClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(item._id)};}} style={{color:'#000', cursor:'pointer'}} /></td>
-                 </tr>
+
+                <TableRow key={index}>
+                    <TableCell align="center"><img src={item.imageurl} height='60px' /></TableCell>
+                    <TableCell align="center">{item.category}</TableCell>
+                    <TableCell align="center">
+                        <Button size="small" variant="contained" color="secondary" startIcon={<DeleteIcon />}  onClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(item._id)};}}>Delete</Button>
+                    
+                    </TableCell>
+
+                    <TableCell>
+                        <Button variant="contained"size="small" color="primary" startIcon={<VisibilityIcon/>} href={'/category/'+item._id}>View</Button>
+                    </TableCell>
+                </TableRow>
             )
         })
         return (
             <div>
                 <div>
-                    <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem'}}>
+                    <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem', display:'flex', justifyContent:'space-between'}}>
                     
                         <Typography style={{color:'white'}}>
-                            View Category
+                            Product Category
+                        </Typography>
+
+                        <Typography style={{color:'white'}}>
+                            {this.state.count} Category
                         </Typography>
 
                     </div>
 
-                    <div style={{padding:'1rem'}}>
-                       <table style={{width:'600px', textAlign:'center'}}>
-                           <thead style={{ background:'#f2f2f2', color:'black'}}>
-                               <tr>
-                                   <th style={{padding:'1rem 0', border:'none'}}>S.No</th>
-                                   <th>Preview</th>
-                                   <th>Title</th>
-                                   <th>Action</th>
-                               </tr>
-                           </thead>
-                           <tbody>
-                              {category}
-                           </tbody>
-                       </table>
+                    <div style={{padding:'1rem',display:'flex', flexDirection:'column',justifyContent:'space-around', alignItems:'center'}}>
+                       
+
+                       <TableContainer className={classes.container} component={Paper}>
+                        <Table className={classes.table} aria-label="simple table">
+                            <TableHead style={{fontWeight:'bold'}}>
+                            <TableRow>
+                                
+                                <TableCell align="center">Preview</TableCell>
+                                <TableCell align="center">Title</TableCell>
+                                <TableCell align="center" colSpan={2}>Action</TableCell>                    
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {category}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+
+                       <ReactPaginate
+                            previousLabel={"prev"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            breakClassName={"break-me"}
+                            pageCount={this.state.pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={"pagination"}
+                            subContainerClassName={"pages pagination"}
+                            activeClassName={"active"}
+                        />
                     </div>
                 </div>
             </div>

@@ -1,8 +1,15 @@
 import React, {Component} from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { Typography, Paper } from "@material-ui/core";
+import { Typography, Button } from "@material-ui/core";
 import CountComponent from "./component/countComponent";
-
+import { Link } from "react-router-dom";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const styles = (theme) => ({
     root: {
@@ -12,7 +19,8 @@ const styles = (theme) => ({
           margin: theme.spacing(1),
           width: theme.spacing(16),
           height: theme.spacing(16),
-        }
+        },
+       
     }});
   
 
@@ -68,24 +76,20 @@ class  Dashboard extends Component {
        
     render(){
 
-        // const {classes} = this.props;
-        const order = this.state.order.map((item, index) => {
+        const {classes} = this.props;
+        const order = this.state.order.slice(0,5).map((item, index) => {
             return (
-
-               
-                <tr key={index}>
-                <td style={index%2!==0 ? {background:'#f1f1f1'} :{background:'#e6e6e6'}}>{index+1}</td>
-                <td>{item.referenceid}</td>
-                <td >{item.titles.split(',').map(title => {
-                    return <div><strong>{title}</strong><br /></div>
-                })}</td>
-                <td style={{width:'120px', padding:'0.5rem 0'}}>{item.address}</td>
-                <td>{item.mobile}</td>
-                <td>
-                   {item.status}
-                </td>
-                <td><a style={{border:'none',padding:'10px', width:'70px', background:'#e6e6e6', textDecoration:'none', color:'blue'}} href={'/order/'+item._id}>View</a></td>
-                 </tr>
+                <TableRow key={item._id}>
+                    <TableCell component="th" scope="row">
+                        {index+1}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                        {item.referenceid}
+                    </TableCell>
+                    <TableCell align="right">{item.mobile}</TableCell>
+                    <TableCell align="right">{item.status}</TableCell>
+                    <TableCell align="right"><Button color="primary"  style={{ textDecoration:'none', color:'blue'}}  size="small" href={'/order/'+item._id}>View</Button></TableCell>
+                </TableRow>
             )
         })
 
@@ -115,24 +119,27 @@ class  Dashboard extends Component {
             </div>
             <div>
                 <div style={{padding:'1rem'}}>
-            <Paper elevation={3} style={{padding:'1rem'}}>
-                <Typography style={{color:'black', fontWeight:'bold', padding:'0.5rem 0'}}>Recent Orders</Typography>
-            <table style={{width:'100%', textAlign:'center'}}>
-                           <thead style={{ background:'blue', color:'white'}}>
-                               <tr>
-                                   <th style={{padding:'1rem 0', border:'none'}}>S.No</th>
-                                   <th>Ref. Id</th>
-                                   <th>Title</th>
-                                   <th>Address</th>
-                                   <th>Mobile</th>
-                                   <th>Status</th>
-                                   <th>Action</th>
-                               </tr>
-                           </thead>
-                           <tbody>
-                              {order}
-                           </tbody>
-                       </table>
+            <Paper elevation={3} style={{ padding:'1rem', width:'600px', minHeight:'400px'}}>
+                <div style={{display:'flex', justifyContent:'space-between'}}>
+                <Typography style={{color:'black', fontWeight:'bold', padding:'0.5rem 0',background:'white'}}>Recent Orders</Typography>
+                <Link style={{color:'blue',textDecoration:'none', fontWeight:'bold', padding:'0.5rem 0'}} href="#">View Pending Orders</Link>
+                </div>
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                        <TableRow>
+                            <TableCell>S.No</TableCell>
+                            <TableCell align="right">Ref ID</TableCell>
+                            <TableCell align="right">Mobile</TableCell>
+                            <TableCell align="right">Status</TableCell>
+                            <TableCell align="right">Action</TableCell>
+                        </TableRow>
+                        </TableHead>
+                        <TableBody>
+                           {order}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Paper>
             </div>
             </div>
