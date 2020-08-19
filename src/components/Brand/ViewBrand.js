@@ -59,7 +59,7 @@ class ViewBrand extends Component {
             isLoading:true
         });
 
-        fetch('http://localhost:8001/admin/brand', {
+        fetch('https://server.dholpurshare.com/admin/brand', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -104,7 +104,7 @@ class ViewBrand extends Component {
 
 
     handleDelete = (id) => {
-        fetch('http://localhost:8001/admin/brand/'+id, {
+        fetch('https://server.dholpurshare.com/admin/brand/'+id, {
               method: "DELETE",
               headers: {
                   "Accept": "application/json",

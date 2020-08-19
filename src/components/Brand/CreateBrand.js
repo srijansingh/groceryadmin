@@ -89,7 +89,7 @@ class CreateBrand extends Component {
                 this.setState({
                     imageurl : url
                 })
-                fetch('http://localhost:8001/admin/brand', {
+                fetch('https://server.dholpurshare.com/admin/brand', {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
