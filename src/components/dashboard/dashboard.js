@@ -46,7 +46,7 @@ class  Dashboard extends Component {
             isLoading:true
         });
 
-        fetch('https://dhols.herokuapp.com/admin/processing', {
+        fetch('https://server.dholpurshare.com/admin/processing', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -99,7 +99,7 @@ class  Dashboard extends Component {
     
     
     
-            fetch('https://dhols.herokuapp.com/admin/delivered', {
+            fetch('https://server.dholpurshare.com/admin/delivered', {
               method: "GET",
               headers: {
                   "Accept": "application/json",
@@ -119,7 +119,7 @@ class  Dashboard extends Component {
                 }) 
             })
     
-            fetch('https://dhols.herokuapp.com/admin/product', {
+            fetch('https://server.dholpurshare.com/admin/product', {
               method: "GET",
               headers: {
                   "Accept": "application/json",
@@ -139,7 +139,7 @@ class  Dashboard extends Component {
                 }) 
             })
     
-            fetch('https://dhols.herokuapp.com/admin/customer', {
+            fetch('https://server.dholpurshare.com/admin/customer', {
               method: "GET",
               headers: {
                   "Accept": "application/json",
@@ -169,16 +169,14 @@ class  Dashboard extends Component {
         const {classes} = this.props;
         const order = this.state.order.slice(0,5).map((item, index) => {
             return (
-                <TableRow key={item._id}>
+                <TableRow key={index}>
                     <TableCell component="th" scope="row">
                         {index+1}
                     </TableCell>
-                    <TableCell component="th" scope="row">
-                        {item.referenceid}
+                    <TableCell component="th" scope="row" align="center">
+                        <b>#{item}</b>
                     </TableCell>
-                    <TableCell align="right">{item.mobile}</TableCell>
-                    <TableCell align="right" style={{textTransform: 'capitalize'}}>{item.status}</TableCell>
-                    <TableCell align="right"><Button color="primary"  style={{ textDecoration:'none', color:'blue'}}  size="small" href={'/order/'+item._id}>View</Button></TableCell>
+                    <TableCell align="right"><Button color="primary"  style={{ textDecoration:'none', color:'blue'}}  size="small" href={'/order/'+item}>View</Button></TableCell>
                 </TableRow>
             )
         })
@@ -214,7 +212,7 @@ class  Dashboard extends Component {
             </div>
             <div>
                 <div style={{padding:'1rem'}}>
-            <Paper elevation={3} style={{ padding:'1rem', width:'600px', minHeight:'400px'}}>
+            <Paper elevation={3} style={{ padding:'1rem', width:'400px', minHeight:'400px'}}>
                 <div style={{display:'flex', justifyContent:'space-between'}}>
                 <Typography style={{color:'black', fontWeight:'bold', padding:'0.5rem 0',background:'white'}}>Recent Orders</Typography>
                 <a style={{color:'blue',textDecoration:'none', fontWeight:'bold', padding:'0.5rem 0'}} href="/processing">View Pending Orders</a>
@@ -224,9 +222,7 @@ class  Dashboard extends Component {
                         <TableHead>
                         <TableRow>
                             <TableCell>S.No</TableCell>
-                            <TableCell align="right">Ref ID</TableCell>
-                            <TableCell align="right">Mobile</TableCell>
-                            <TableCell align="right">Status</TableCell>
+                            <TableCell align="center">Order ID</TableCell>
                             <TableCell align="right">Action</TableCell>
                         </TableRow>
                         </TableHead>

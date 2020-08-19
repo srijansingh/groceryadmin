@@ -1,12 +1,30 @@
 import React, { Component } from 'react'
 import { withStyles } from "@material-ui/core/styles";
-import { Typography, Paper } from "@material-ui/core";
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import { Typography, Button, Divider, CircularProgress } from "@material-ui/core";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import moment from 'moment';
+import Paper from '@material-ui/core/Paper';
+
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
 import "./ViewOrder.css";
 
 const styles = (theme) => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 200,
+      },
+      selectEmpty: {
+        marginTop: theme.spacing(2),
+      },
     root: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -24,13 +42,15 @@ class SingleOrder extends Component {
         this.state = {
             isLoading : false,
             id:null,
+          
+            product:[],
             status:null,
+            orderdate:null,
+            updatedate:null,
+            ordervalue:null,
             referenceid:null,
-            sku:null,
-            titles:null,
-            imageurls:null,
             mobile:null,
-            addredd:null
+            address:null
 
         }
     }
@@ -56,14 +76,15 @@ class SingleOrder extends Component {
         }).then(response => {
             console.log(response.data.address)
             this.setState({
-                status:response.data.status,
-                referenceid:response.data.referenceid,
-                sku:response.data.sku,
-                imageurls:response.data.imageurls,
-                titles: response.data.titles,
-                mobile:response.data.mobile,
-                address:response.data.address,
-                id:response.data._id,
+                referenceid:response.data[0].referenceid,
+                mobile:response.data[0].mobile,
+                address:response.data[0].address,
+                ordervalue:response.data[0].totalcost,
+                orderdate:response.data[0].createdAt,
+                status:response.data[0].status,
+                orderstatus:response.data[0].status,
+                updatedate:response.data[0].updatedAt,
+                product:response.data,
                 isLoading:false
             }) 
         })
@@ -108,6 +129,7 @@ class SingleOrder extends Component {
     }
     
     render() {
+        const {classes} = this.props;
         let checkStatus;
 
         if(this.state.status!=='delivered'){
@@ -129,6 +151,46 @@ class SingleOrder extends Component {
             )
         }
 
+        
+        let ProductList;
+        if(this.state.isStarted){
+        ProductList= (
+            <div>
+                <CircularProgress />
+            </div>
+            )
+        }
+
+        else{
+            ProductList = this.state.product.map((item, index) => {
+                return (
+                    <TableRow key={index}>
+                        <TableCell  scope="row">
+                            {index+1}
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            <b>{item.sku}</b>
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            <img src={item.imageurls} height="35px" />
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            {item.titles}
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            {item.sellingprice}
+                        </TableCell>
+                        <TableCell scope="row" align="center">
+                            {item.quantity}
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            {item.sellingprice * item.quantity}
+                        </TableCell>
+                        
+                    </TableRow>
+                )
+            })
+        }
 
         return (
             <div>
@@ -136,59 +198,67 @@ class SingleOrder extends Component {
                     <div style={{background:'rgb(50, 70, 246)', padding:'0.8rem'}}>
                     
                         <Typography style={{color:'white'}}>
-                            Reference ID : {this.state.referenceid}
+                            Reference ID : <b>#{this.state.referenceid}</b>
                         </Typography>
 
-                        <Typography style={{color:'white'}}>
-                            Status : {this.state.status}
-                        </Typography>
-
+                        
                     </div>
 
                     <div style={{padding:'1rem'}}>
-                        <Paper elevation={3} style={{width:'700px', textAlign:'center'}}>
-                       <table cellSpacing='2' style={{width:'100%', textAlign:'center'}}>
-                           
-                               <tr >
-                                   <th style={{padding:'1rem', background:'#e6e6e6'}}>Ref. Id</th><th style={{padding:'1rem', background:'#f2f2f2'}}>{this.state.referenceid}</th>
-                                </tr>
-                                <tr>
-                                   <th  style={{padding:'1rem', background:'#e6e6e6'}}>SKU</th>
-                                   <td style={{padding:'1rem', background:'#f2f2f2'}}>
-                                       {this.state.sku}
-                                   </td>
-                                </tr>
-                                
-                                <tr>
-                                   <th  style={{padding:'1rem', background:'#e6e6e6'}}>Title</th><td style={{padding:'1rem', background:'#f2f2f2'}}>{this.state.titles}</td>
-                                </tr>
-                                <tr>
-                                    <th  style={{padding:'1rem', background:'#e6e6e6'}}>Address</th><td style={{padding:'1rem', background:'#f2f2f2'}}>{this.state.address}</td>
-                                </tr>
-                                <tr>
-                                    <th  style={{padding:'1rem', background:'#e6e6e6'}}>Mobile</th><td style={{padding:'1rem', background:'#f2f2f2'}}>{this.state.mobile}</td>
-                                </tr>
-                                <tr>
-                                   <th  style={{padding:'1rem', background:'#e6e6e6'}}>Status</th>
-                                   <td style={{padding:'1rem', background:'#f2f2f2'}}>
-                                   {checkStatus}
-                                   </td>
-                                </tr>
-                                <tr>
-                                   <th  style={{ background:'#e6e6e6'}}>Action</th>
-                                   <td style={{padding:'1rem', background:'#f2f2f2'}}>
-                                       
-                                    {
-                                        this.state.isLoading ? 
-                                        <button>Updating..</button>
-                                        :
-                                        <button onClick={() => {this.handleUpdate(this.state.id)}}>Update</button>
-                                    }
-                                   </td>
-                                </tr>
-                               
-                           
-                       </table>
+                        <Paper elevation={1} style={{width:'700px'}}>
+                            <div style={{display:'flex', padding:'0 1rem', height:'50px', justifyContent:'space-between', alignItems:'center'}}>
+                                <Typography>Order ID : <b>#{this.state.referenceid}</b></Typography>   
+                                <Typography>Order Date : {moment(this.state.orderdate).format('DD MMMM YYYY, HH:MM')}</Typography>   
+                            </div>
+                            <Divider />
+                            <div style={{padding:'0.5rem 1rem',display:'flex',flexDirection:'column', height:'120px', justifyContent:'space-between'}}>
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Order Status</Typography><Typography style={{textTransform: 'capitalize', color:'#8cf644', fontWeight:'bold'}}>{this.state.orderstatus}</Typography></span>   
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Delivered Date</Typography><Typography style={{textTransform: 'capitalize', fontWeight:'bold'}}>{moment(this.state.updatedate).format('DD MMMM YYYY')}</Typography></span> 
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Order Value</Typography><Typography style={{textTransform: 'capitalize', color:'#000', fontWeight:'bold'}}>{this.state.ordervalue}</Typography></span>  
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Address</Typography><Typography style={{textTransform: 'capitalize', color:'#000', fontSize:'15px'}}>{this.state.address}</Typography></span>  
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Mobile</Typography><Typography>{this.state.mobile}</Typography></span>  
+                            </div>
+                            <Divider />
+                            <TableContainer className={classes.container} style={{ padding:'0'}}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead style={{fontWeight:'bold'}}>
+                                <TableRow>
+                                    
+                                    <TableCell>S.No</TableCell>
+                                    <TableCell align="center">SKU</TableCell>
+                                    <TableCell align="center">Image</TableCell>
+                                    <TableCell align="center">Title</TableCell> 
+                                    <TableCell align="center">SP</TableCell>   
+                                    <TableCell align="center">Quantity</TableCell> 
+                                    <TableCell align="center">Total</TableCell>              
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {ProductList}
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+                            <Paper style={{padding:'0 1rem',height:'100px',  display:'flex',alignItems:'center', justifyContent:'space-between'}}>
+                                <Typography component="h2">Change Status</Typography>
+                                <div style={{width:'320px',display:'flex',alignItems:'center', justifyContent:'space-between'}}>
+                                <FormControl  className={classes.formControl}>
+                                    <Select  native value={this.state.status}  label="Status" onChange={(event)=>{this.setState({status:event.target.value})}}
+                                    inputProps={{
+                                        name: 'status',
+                                        id: 'outlined-age-native-simple',
+                                    }}
+                                    >
+                                    <option selected value={this.state.status} >{this.state.status}</option>
+                                    <option disabled>Status</option>
+                                    <option value='processing'>Processing</option>
+                                    <option value='confirmed'>Confirm</option>
+                                    <option value='shipped'>Shipped</option>
+                                    <option value='delivered'>Delivered</option>
+                                    </Select>
+                                </FormControl>
+                                <Button style={{width:'120px'}} color="primary" variant="contained" onClick={() => {this.handleUpdate(this.state.referenceid)}}>Update</Button>
+                                </div>
+                            </Paper>
                        </Paper>
                     </div>
                 </div>
@@ -201,8 +271,4 @@ class SingleOrder extends Component {
 export default  withStyles(styles, {withThemes: true})(SingleOrder)
 
 
- /* <div key={index} onDoubleClick={() =>{if(window.confirm('Delete the item?')) {this.handleDelete(list._id)};}} className="gallery-card">
-                    <div className="gallery-image">
-                        <img src={list.imagelink} alt={list.title+" edgav"}/>
-                    </div>
-                </div> */
+ 

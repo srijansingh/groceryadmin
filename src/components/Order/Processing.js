@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withStyles } from "@material-ui/core/styles";
-import { Typography, Button } from "@material-ui/core";
+import { Typography, Button, Divider, CircularProgress } from "@material-ui/core";
 import ReactPaginate from 'react-paginate';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,7 +8,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import moment from 'moment';
 import Paper from '@material-ui/core/Paper';
+
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import "./ViewOrder.css";
 
 const styles = (theme) => ({
@@ -34,7 +38,18 @@ class ProcessingOrder extends Component {
             count:0,
             offset: 0,
             perPage: 10,
-            currentPage: 0
+            currentPage: 0,
+            
+            isStarted:false,
+            selected:false,
+            product:[],
+            orderstatus:null,
+            orderdate:null,
+            updatedate:null,
+            ordervalue:null,
+            referenceid:null,
+            mobile:null,
+            address:null
         };
 
         this.handlePageClick = this
@@ -53,7 +68,7 @@ class ProcessingOrder extends Component {
             isLoading:true
         });
 
-        fetch('https://dhols.herokuapp.com/admin/processing', {
+        fetch('https://server.dholpurshare.com/admin/processing', {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -94,36 +109,117 @@ class ProcessingOrder extends Component {
         });
 
     };
+
+    handleOrders = (ref) => {
+        this.setState({
+            isStarted:true,
+            selected:true
+        });
+        console.log(ref)
+        fetch('https://server.dholpurshare.com/admin/order/'+ref, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                Authorization: 'Bearer '+ this.props.token
+            }
+        })
+        .then(res => {
+            if(res.status !==200){
+                throw new Error('Failed to fetch the product')
+            }
+            return res.json()
+        }).then(response => {
+            console.log(response.data.address)
+            this.setState({
+                orderstatusstatus:response.data[0].status,
+                referenceid:response.data[0].referenceid,
+                mobile:response.data[0].mobile,
+                address:response.data[0].address,
+                ordervalue:response.data[0].totalcost,
+                orderdate:response.data[0].createdAt,
+                orderstatus:response.data[0].status,
+                status:response.data[0].status,
+                updatedate:response.data[0].updatedAt,
+                product:response.data,
+                isStarted:false
+            }) 
+        })
+        .catch(err => {
+            this.setState({
+                isStarted:false
+            })
+        })
+
+
+    }
     
     render() {
+
+
+        let ProductList;
+
+        if(this.state.selected === null){
+            ProductList = (
+                <div>
+                <Paper elevation={3} style={{height:'70vh', width:'100%', display:'flex',alignItems:'center', justifyContent:'space-around'}}>
+                    <div style={{color:'#a6a6a6',fontSize:'1.2rem',fontWeight:'bold'}}>Choose Order to Monitor</div>
+                </Paper>
+            </div>
+            
+            );
+        }
+       else if(this.state.isStarted){
+        ProductList= (
+            <div >
+                <CircularProgress />
+            </div>
+            )
+        }
+
+        else{
+            ProductList = this.state.product.map((item, index) => {
+                return (
+                    <TableRow key={index}>
+                        <TableCell  scope="row">
+                            {index+1}
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            <b>{item.sku}</b>
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            <img src={item.imageurls} height="35px" />
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            {item.titles}
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            {item.sellingprice}
+                        </TableCell>
+                        <TableCell scope="row" align="center">
+                            {item.quantity}
+                        </TableCell>
+                        <TableCell  scope="row" align="center">
+                            {item.sellingprice * item.quantity}
+                        </TableCell>
+                        
+                    </TableRow>
+                )
+            })
+        }
+
         const {classes} = this.props;
         const slice = this.state.order.slice(this.state.offset, this.state.offset + this.state.perPage)
         const order = slice.map((item, index) => {
             return (
-
-               
-                
-
-
-
                 <TableRow key={index}>
-                    <TableCell align="center">{item.referenceid}</TableCell>
-                    <TableCell align="center">
-                        {item.sku.split(',').slice(0,4).map(sku => {
-                            return <div><strong>{sku}</strong><br /></div>
-                        })}
+                    <TableCell component="th" scope="row">
+                        {index+1}
                     </TableCell>
-                    <TableCell align="center">
-                        {item.titles.split(',').slice(0,4).map(title => {
-                            return <div><strong>{title}</strong><br /></div>
-                        })}
+                    <TableCell component="th" scope="row" align="center">
+                        <b>#{item}</b>
                     </TableCell>
-                    <TableCell align="center">{item.address}</TableCell>
-                    <TableCell align="center">{item.mobile}</TableCell>
-                    <TableCell align="center" style={{textTransform: 'capitalize'}}>{item.status}</TableCell>
-                    <TableCell>
-                        <Button variant="contained"size="small" color="primary"  href={'/order/'+item._id}>View</Button>
-                    </TableCell>
+                    <TableCell align="right"><Button color="primary"  style={{ textDecoration:'none', color:'blue'}}  size="small" onClick={() => this.handleOrders(item)}>View</Button></TableCell>
                 </TableRow>
             )
         })
@@ -138,35 +234,31 @@ class ProcessingOrder extends Component {
 
                     <Typography style={{color:'white'}}>
                     {
-                            this.state.isLoading ? 'Loading...' : this.state.count +' Processing Order'
+                            this.state.isLoading ? 'Loading...' : this.state.count +' Processing Orders'
                         } 
                     </Typography>
 
                 </div>
 
-                    <div style={{padding:'1rem',display:'flex', flexDirection:'column',justifyContent:'space-around', alignItems:'center'}}>
-                      
-                       <TableContainer className={classes.container} component={Paper}>
+                    <div style={{padding:'1rem',display:'flex', flexDirection:'column'}}>
+                      <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between' }}>
+                       <TableContainer  className={classes.container} style={{ padding:'1rem', maxWidth:'300px', minHeight:'80vh', display:'flex', flexDirection:'column', justifyContent:'space-between', alignItems:'center'}} component={Paper}>
+                        
                         <Table className={classes.table} aria-label="simple table">
                             <TableHead style={{fontWeight:'bold'}}>
                             <TableRow>
                                 
-                                <TableCell align="center">Ref. Id</TableCell>
-                                <TableCell align="center">SKU</TableCell>
-                                <TableCell align="center">Title</TableCell>
-                                <TableCell align="center">Address</TableCell>
-                                <TableCell align="center">Mobile</TableCell>
-                                <TableCell align="center">Status</TableCell>
-                                <TableCell align="center">Action</TableCell>                    
+                                <TableCell>S.No</TableCell>
+                                <TableCell align="center">Order ID</TableCell>
+                                <TableCell align="right">Action</TableCell>                   
                             </TableRow>
                             </TableHead>
                             <TableBody>
                             {order}
                             </TableBody>
                         </Table>
-                        </TableContainer>
 
-                       <ReactPaginate
+                        <ReactPaginate
                             previousLabel={"prev"}
                             nextLabel={"next"}
                             breakLabel={"..."}
@@ -179,6 +271,76 @@ class ProcessingOrder extends Component {
                             subContainerClassName={"pages pagination"}
                             activeClassName={"active"}
                         />
+                        </TableContainer>
+                    {
+                        this.state.selected 
+                        ?
+
+                    
+                        <Paper elevation={1} style={{width:'700px'}}>
+                            <div style={{display:'flex', padding:'0 1rem', height:'50px', justifyContent:'space-between', alignItems:'center'}}>
+                                <Typography>Order ID : <b>#{this.state.referenceid}</b></Typography>   
+                                <Typography>Order Date : {moment(this.state.orderdate).format('DD MMMM YYYY, HH:MM')}</Typography>   
+                            </div>
+                            <Divider />
+                            <div style={{padding:'0.5rem 1rem',display:'flex',flexDirection:'column', height:'120px', justifyContent:'space-between'}}>
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Order Status</Typography><Typography style={{textTransform: 'capitalize', color:'#8cf644', fontWeight:'bold'}}>{this.state.orderstatus}</Typography></span>   
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Delivered Date</Typography><Typography style={{textTransform: 'capitalize', fontWeight:'bold'}}>{moment(this.state.updatedate).format('DD MMMM YYYY')}</Typography></span> 
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Order Value</Typography><Typography style={{textTransform: 'capitalize', color:'#000', fontWeight:'bold'}}>{this.state.ordervalue}</Typography></span>  
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Address</Typography><Typography style={{textTransform: 'capitalize', color:'#000', fontSize:'15px'}}>{this.state.address}</Typography></span>  
+                                <span style={{display:'flex', justifyContent:'space-between'}}><Typography>Mobile</Typography><Typography>{this.state.mobile}</Typography></span>  
+                            </div>
+                            <Divider />
+                            <TableContainer className={classes.container} style={{ padding:'1rem 0'}}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead style={{fontWeight:'bold'}}>
+                                <TableRow>
+                                    
+                                    <TableCell>S.No</TableCell>
+                                    <TableCell align="center">SKU</TableCell>
+                                    <TableCell align="center">Image</TableCell>
+                                    <TableCell align="center">Title</TableCell> 
+                                    <TableCell align="center">SP</TableCell>   
+                                    <TableCell align="center">Quantity</TableCell> 
+                                    <TableCell align="center">Total</TableCell>              
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {ProductList}
+                                </TableBody>
+                            </Table>
+                            </TableContainer>
+
+                            <Paper style={{padding:'0 1rem',height:'100px',  display:'flex',alignItems:'center', justifyContent:'space-between'}}>
+                                <Typography component="h2">Change Status</Typography>
+                                <div style={{width:'320px',display:'flex',alignItems:'center', justifyContent:'space-between'}}>
+                                <FormControl  className={classes.formControl}>
+                                    <Select  native value={this.state.status}  label="Status" onChange={(event)=>{this.setState({status:event.target.value})}}
+                                    inputProps={{
+                                        name: 'status',
+                                        id: 'outlined-age-native-simple',
+                                    }}
+                                    >
+                                    <option selected value={this.state.status} >{this.state.status}</option>
+                                    <option disabled>Status</option>
+                                    <option value='processing'>Processing</option>
+                                    <option value='shipped'>Shipped</option>
+                                    <option value='delivered'>Delivered</option>
+                                    </Select>
+                                </FormControl>
+                                <Button style={{width:'120px'}} color="primary" variant="contained" onClick={() => {this.handleUpdate(this.state.referenceid)}}>Update</Button>
+                                </div>
+                            </Paper>
+                        </Paper>
+
+                        :
+                        <Paper elevation={1} style={{height:'90vh', width:'700px', display:'flex',alignItems:'center', justifyContent:'space-around'}}>
+                        <div style={{color:'#a6a6a6',fontSize:'1.2rem',fontWeight:'bold'}}>Choose Order to Monitor</div>
+                    </Paper>
+                        
+                    }
+                    </div>
+                       
                     </div>
                 </div>
             </div>
