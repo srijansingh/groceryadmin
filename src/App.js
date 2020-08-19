@@ -23,6 +23,8 @@ import ShippedOrder from './components/Order/Shipped';
 
 import ViewCatategorySub from './components/Category/CategorySub';
 import SubProduct from './components/Subcategory/SubcategoryProduct';
+import ViewBrand from './components/Brand/ViewBrand';
+import CreateBrand from './components/Brand/CreateBrand';
 
 
 class App extends Component {
@@ -243,6 +245,21 @@ render(){
             exact
             render={props => (
               <ViewSubcategory userId={this.state.userId}  token={this.state.token} />
+            )}
+          />
+
+        <Route
+            path="/create-brand"
+            exact
+            render={props => (
+              <CreateBrand userId={this.state.userId}  token={this.state.token} />
+            )}
+          />
+        <Route
+            path="/view-brand"
+            exact
+            render={props => (
+              <ViewBrand userId={this.state.userId}  token={this.state.token} />
             )}
           />
 

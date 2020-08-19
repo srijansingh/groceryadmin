@@ -174,6 +174,20 @@ const styles = (theme) => ({
                                 <ListItemText primary="View Subcategory" />
                         </NestedListItemLink>
 
+                        <NestedListItemLink key="7" className={classes.nested} href="/create-brand">
+                            <ListItemIcon>
+                                <AddIcon style={{color:"black"}}/>
+                                </ListItemIcon>
+                                <ListItemText primary="Create Brand" />
+                        </NestedListItemLink>
+
+                        <NestedListItemLink key="7" className={classes.nested} href="/view-brand">
+                            <ListItemIcon>
+                                <VisibilityIcon style={{color:"black"}}/>
+                                </ListItemIcon>
+                                <ListItemText primary="View Brand" />
+                        </NestedListItemLink>
+
                         
                         </List>
                     </Collapse>
