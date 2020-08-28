@@ -153,6 +153,39 @@ class ProcessingOrder extends Component {
 
 
     }
+
+
+    handleUpdate = (e) => {
+        this.setState({
+            isLoading:true
+        })
+        console.log(e)
+        fetch('https://server.dholpurshare.com/admin/order', {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                Authorization:'Bearer '+ this.props.token
+            },
+            body: JSON.stringify({status:this.state.status, id:e})
+        }).then(result => {
+            result.json().then(response => {
+                
+                this.setState({
+                    isLoading: false
+                })
+                alert('Status Updated Successfully')
+                window.location.reload(false);
+                
+            })
+        }).catch(err => {
+            alert("Something went wrong")
+            this.setState({
+                isLoading: false,
+                error: err
+            });
+        });  
+    }
     
     render() {
 
